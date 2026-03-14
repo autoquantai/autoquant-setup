@@ -51,6 +51,15 @@ Use `seed_train.py` as the baseline template for the canonical model signature.
 - Sandbox validation uses a small recent sample and sets `selected_hyperparams.training_size_days` to `3`.
 - `run-model` is the full execution path and performs the full training and search workflow.
 
+## Generation And Parent Rules
+
+- Treat search as a generation graph, not a single linear sequence.
+- Each generation is a group of multiple model experiments within one experiment (`run_id`).
+- Generate `N` new models in each generation to test multiple ideas in parallel.
+- Each model can have at most two parents.
+- Parent models can be chosen from the previous generation or any earlier node in the graph.
+- Choose parents that maximize expected objective improvement based on historical experiment results.
+
 ## Metrics And Results
 
 - Failed experiments store `error` and may include `runtime_error`, `stdout`, and `stderr`.
