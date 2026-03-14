@@ -18,7 +18,7 @@ python3 -m venv "$HOME/.autoquant/venv/autoquant"
 ## AutoQuant CLI
 
 ```bash
-"$HOME/.autoquant/venv/autoquant/bin/pip" install "git+https://github.com/dev0xx1/autoquant-cli.git@main"
+"$HOME/.autoquant/venv/autoquant/bin/pip" install "git+https://github.com/autoquantai/autoquant-cli.git@main"
 ```
 
 ## Shell launcher 

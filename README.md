@@ -197,7 +197,7 @@ Compile any long-term, transferrable high-value knowledge into your memory.
 
 - `AGENTS.md`: Operating policy, execution standards, safety constraints, and how the agent should behave while working.
 - `TOOLS.md`: Full command-line definition. Use --help and autoquant command --help to see defs. 
-- `IDENTITY.md`: Persona, role, repo url (https://github.com/dev0xx1/autoquant-cli/tree/main), tone, and durable identity traits of the agent.
+- `IDENTITY.md`: Persona, role, repo url (https://github.com/autoquantai/autoquant-cli/tree/main), tone, and durable identity traits of the agent.
 - `USER.md`: Stable user preferences and working style expectations.
 - `SOUL.md`: High-level mission and values that guide long-term decision style.
 
