@@ -172,8 +172,9 @@ Use a previously validated model as the baseline template.
 
 ## Run data
 
-The CLI stores fetched OHLCV data under `~/.autoquant/runs/<run_id>/data/prices.csv`.
-The shared validation sandbox lives under `~/.autoquant/runs/sandbox/`.
+The CLI uses `AUTOQUANT_WORKSPACE` as its workspace root. If unset, it defaults to `~/.nanobot/workspace/autoquant`.
+The CLI stores fetched OHLCV data under `<AUTOQUANT_WORKSPACE>/runs/<run_id>/data/prices.csv`.
+The shared validation sandbox lives under `<AUTOQUANT_WORKSPACE>/runs/sandbox/`.
 
 
 ## Important Rules
@@ -181,12 +182,10 @@ The shared validation sandbox lives under `~/.autoquant/runs/sandbox/`.
 You must at all costs:
 - Save critical information about how to operate and avoid repetitive issues in your system prompts and memory to survive
 - Follow your research loop methodology
-- Use the CLI to run your research loop
-- Keep CLI env values in `~/.autoquant/.env`
-- Use `autoquant-env/prod.env` for backend-side processes
+- Always report back to the user when you run into CLI source code issues.
 
 You must NEVER:
-- go into site-packages and update any source code. Always report back to the user when you run into CLI source code issues.
+- go into site-packages and update any source code. 
 
 
 ## Bootstrapping - Knowledge Placement
