@@ -5,7 +5,7 @@
 Model files must contain exactly one concrete subclass of `AutoQuantModel`.
 
 - Implement `create_features(frame)` and return `(prepared_frame, feature_names)`.
-- Optionally implement `get_hyperparameter_candidates()`.
+- Optionally implement `get_hyperparameter_candidates()` if the model has hyperparameters. Make the search ranges broad.
 - Implement `fit(x_train, y_train, hyperparams)`.
 - Implement `predict(x_test)`.
 - Keep the file class-only.
@@ -37,9 +37,9 @@ Use `seed_train.py` as the baseline template for the canonical model signature.
 - Data source is `massive` or `ccxt`.
 - Granularity is 1 hour candles.
 - Local run data lives under `AUTOQUANT_WORKSPACE/runs/<run_id>/data/`.
-- The local run directory contains `raw_prices.csv`, `prices.csv`, and `run_metadata.json`.
-- `raw_prices.csv` stores long-form OHLCV rows with `timestamp`, `ticker`, `open`, `high`, `low`, `close`, `volume`.
-- `prices.csv` stores the merged model dataset.
+- The local run directory contains `ohlcv.csv` and `run_dataset.csv`.
+- `ohlcv.csv` stores long-form OHLCV rows with `timestamp`, `ticker`, `open`, `high`, `low`, `close`, `volume`.
+- `run_dataset.csv` stores the merged model dataset.
 - The target ticker becomes canonical `open`, `high`, `low`, `close`, `volume` columns.
 - Input ticker features are added as prefixed columns such as `msft_open` or `qqq_close`.
 - Input ticker data is merged into the target timeline and the merged dataset must not lose more than 10% of target rows.

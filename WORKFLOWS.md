@@ -5,20 +5,26 @@
 - `autoquant --help`
 - `autoquant <command> --help`
 - `autoquant health`
-- `autoquant create-experiment --name ... --input-ohlc-tickers ... --target-ticker ... --from-date ... --to-date ... --task ... --data-provider ...`
+- `autoquant create-experiment --name ... --input-ohlc-tickers ... --target-ticker ... --from-date ... --to-date ... --task ... --data-provider ... --ccxt-exchange ... --max-experiments ... --train-time-limit-minutes ... --refresh-data`
 - `autoquant api <path> '<json>'`
 - `autoquant validate-model --run-id ... --model-path ...`
-- `autoquant run-model --run-id ... --name ... --generation ... --model-path ... --log ...`
+- `autoquant run-model --run-id ... --name ... --generation ... --model-path ... --log ... --parent-ids ... --reasoning ... --task ...`
 - `autoquant get-openapi`
 
 For day-to-day research, prioritize `create-experiment`, `health`, `api`, `validate-model`, and `run-model`.
+
+## API Action Space
+
+- Treat `autoquant api` as a first-class action space for exploration and inspection.
+- Fetch the API schema with `autoquant get-openapi` at the start of a session or when endpoint support is unclear.
+- Use the OpenAPI output to discover valid endpoints and payload shapes before calling unknown routes.
 
 ## Research Loop
 
 Repeat until the stop condition for a given experiment (`run_id`):
 
 1. Check environment and backend health with `autoquant health`.
-2. Create the experiment with `autoquant create-experiment --name ... --input-ohlc-tickers ... --target-ticker ... --from-date ... --to-date ... --task ...`.
+2. Create the experiment with `autoquant create-experiment --name ... --input-ohlc-tickers ... --target-ticker ... --from-date ... --to-date ... --task ... --data-provider ... --ccxt-exchange ...`.
 3. Let `create-experiment` materialize local experiment data under `AUTOQUANT_WORKSPACE/runs/<run_id>/data/`.
 4. Inspect experiment metadata with `autoquant api /run/get`.
 5. Review prior model experiments with `autoquant api /experiment/get`.
@@ -28,7 +34,7 @@ Repeat until the stop condition for a given experiment (`run_id`):
 9. Start from `seed_train.py` or strong validated prior models and write all candidate model files locally.
 10. Validate each candidate with `autoquant validate-model --run-id ... --model-path ...`.
 11. Treat validation as a sandbox smoke test, not the full training search.
-12. Execute each candidate with `autoquant run-model --run-id ... --name ... --generation ... --model-path ... --log ...`.
+12. Execute each candidate with `autoquant run-model --run-id ... --name ... --generation ... --model-path ... --log ... --parent-ids ... --reasoning ...`.
 13. Review all model experiments from the generation together and compare against prior generations.
 14. Stop when objective quality plateaus or the run has enough generations.
 15. Save transferrable findings for future runs.
@@ -41,7 +47,7 @@ Repeat until the stop condition for a given experiment (`run_id`):
 
 ## Experiment Graph Semantics
 
-- An experiment consists of multiple generations.
+- A run consists of multiple generations.
 - A generation consists of multiple model experiments evaluated together.
 - A model experiment may have zero, one, or two parents.
 - A model's parents can be selected from the immediate prior generation or any earlier generation.
@@ -53,9 +59,8 @@ Repeat until the stop condition for a given experiment (`run_id`):
 
 `create-experiment` validates the date range and market config before creating the experiment. After the experiment is created, it prepares local experiment data and writes:
 
-- `AUTOQUANT_WORKSPACE/runs/<run_id>/data/raw_prices.csv`
-- `AUTOQUANT_WORKSPACE/runs/<run_id>/data/prices.csv`
-- `AUTOQUANT_WORKSPACE/runs/<run_id>/data/run_metadata.json`
+- `AUTOQUANT_WORKSPACE/runs/<run_id>/data/ohlcv.csv`
+- `AUTOQUANT_WORKSPACE/runs/<run_id>/data/run_dataset.csv`
 
 Use `--data-provider massive` for the default market data path or `--data-provider ccxt --ccxt-exchange ...` for exchange-backed crypto data.
 
