@@ -21,23 +21,27 @@ For day-to-day research, prioritize `create-experiment`, `health`, `api`, `valid
 
 ## Research Loop
 
-Repeat until the stop condition for a given experiment (`run_id`):
+Assume the experiment (`run_id`) already exists. 
+Ensure the backend contract is current with `autoquant get-openapi`.
 
-1. Check environment and backend health with `autoquant health`.
-2. Create the experiment with `autoquant create-experiment --name ... --input-ohlc-tickers ... --target-ticker ... --from-date ... --to-date ... --task ... --data-provider ... --ccxt-exchange ...`.
-3. Let `create-experiment` materialize local experiment data under `AUTOQUANT_WORKSPACE/runs/<run_id>/data/`.
-4. Inspect experiment metadata with `autoquant api /run/get`.
-5. Review prior model experiments with `autoquant api /experiment/get`.
-6. Plan the next generation as `N` candidate models that target different hypotheses.
-7. For each candidate model, choose 0-2 parents from strong prior models in the graph.
-8. Parent models can come from the previous generation or any earlier part of the tree.
-9. Start from `seed_train.py` or strong validated prior models and write all candidate model files locally.
-10. Validate each candidate with `autoquant validate-model --run-id ... --model-path ...`.
-11. Treat validation as a sandbox smoke test, not the full training search.
-12. Execute each candidate with `autoquant run-model --run-id ... --name ... --generation ... --model-path ... --log ... --parent-ids ... --reasoning ...`.
-13. Review all model experiments from the generation together and compare against prior generations.
-14. Stop when objective quality plateaus or the run has enough generations.
-15. Save transferrable findings for future runs.
+Repeat until the stop condition is reached:
+
+- Check environment and backend health with `autoquant health`.
+- Inspect experiment metadata with `autoquant api /run/get`.
+- Review prior model experiments with `autoquant api /experiment/get`.
+- Fetch the run graph for lineage context with `autoquant api /run/graph/get '{"run_id":"<run_id>"}'`.
+- Use your learning context to decide the next generation as `N` candidate models that target different hypotheses.
+- For each candidate model, choose up to 2 parents from strong prior models in the graph.
+- For root nodes, set `parent_ids` to `null` (or `[]`) in the run payload.
+- Parent models can come from the previous generation or any earlier part of the tree.
+- Start from `seed_train.py` for classification or strong validated prior models and write all candidate model files locally.
+- Validate each candidate with `autoquant validate-model --run-id ... --model-path ...`.
+- Treat validation as a sandbox smoke test, not the full training search.
+- Execute each candidate with `autoquant run-model --run-id ... --name ... --generation ... --model-path ... --log ... --parent-ids ... --reasoning ...`.
+- Review all model experiments from the generation together and compare against prior generations and results vs expected results.
+- Write the generation report through the API with `autoquant api /report/create '{"run_id":"<run_id>","generation":<generation>,"content_md":"..."}'`.
+- Stop when objective quality plateaus or the run has enough generations.
+- Save transferrable findings for future runs.
 
 ## Canonical Terms
 
