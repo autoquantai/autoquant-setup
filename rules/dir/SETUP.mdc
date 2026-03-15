@@ -1,0 +1,146 @@
+---
+alwaysApply: false
+description: Fetch when setting up the environment, installing the CLI, configuring workspace or env vars, or verifying health.
+---
+
+
+# Setup
+
+
+## Workspace
+
+Autoquant setup is Cursor-dedicated and must run from the current Cursor workspace root.
+
+
+Please follow the step by step process below
+
+## Set workspace
+
+```bash
+export AUTOQUANT_WORKSPACE="${AUTOQUANT_WORKSPACE:-$PWD/.autoquant}"
+mkdir -p "$AUTOQUANT_WORKSPACE"
+```
+
+AutoQuant should export/load environment variables from `AUTOQUANT_WORKSPACE/.env`.
+
+## Install Framework Rules In Cursor
+
+Clone the latest setup repository in the current workspace root, then sync rule files into `.cursor/rules/`.
+
+```bash
+if [ ! -d "$PWD/autoquant-setup/.git" ]; then
+  git clone https://github.com/autoquantai/autoquant-setup "$PWD/autoquant-setup"
+else
+  git -C "$PWD/autoquant-setup" pull --ff-only
+fi
+mkdir -p "$PWD/.cursor/rules"
+cp -f "$PWD/autoquant-setup/rules/"*.mdc "$PWD/.cursor/rules/" 2>/dev/null || true
+cp -f "$PWD/autoquant-setup/rules/dir/"*.mdc "$PWD/.cursor/rules/"
+```
+
+## Required Env Vars
+
+The CLI try to load environment variables from:
+
+1. `os.environ`
+2. `AUTOQUANT_WORKSPACE/.env`
+
+All required keys must be present in either of these two sources. If any required key is missing, `autoquant health` and CLI commands fail.
+
+Reference: [`.env.example`](../../.env.example)
+
+Create the env file from the example:
+
+```bash
+cp "$PWD/autoquant-setup/.env.example" "$AUTOQUANT_WORKSPACE/.env"
+```
+
+Then fill values in `$AUTOQUANT_WORKSPACE/.env` for any keys not already provided via `os.environ`.
+
+```bash
+MASSIVE_API_KEY=<your_massive_api_key>
+AUTOQUANT_API_KEY=<your_autoquant_api_key>
+AUTOQUANT_API_URL=<your_autoquant_api_url>
+```
+
+## Install
+
+```bash
+python3 -m venv "$AUTOQUANT_WORKSPACE/venv/autoquant"
+"$AUTOQUANT_WORKSPACE/venv/autoquant/bin/pip" install "git+https://github.com/autoquantai/autoquant-cli.git@main"
+```
+
+## Cursor Python Interpreter
+
+Set Cursor's default Python interpreter to the Autoquant virtual environment.
+
+```bash
+mkdir -p "$PWD/.vscode"
+cat <<EOF > "$PWD/.vscode/settings.json"
+{
+  "python.defaultInterpreterPath": "$AUTOQUANT_WORKSPACE/venv/autoquant/bin/python"
+}
+EOF
+```
+
+## Launcher
+
+Create a standard workspace-root launcher so any agent can enter an AutoQuant-ready shell with one command.
+
+```bash
+cat <<'EOF' > "$PWD/autoquant-bash.sh"
+#!/usr/bin/env bash
+set -euo pipefail
+
+export AUTOQUANT_WORKSPACE="${AUTOQUANT_WORKSPACE:-$PWD/.autoquant}"
+mkdir -p "$AUTOQUANT_WORKSPACE"
+export VIRTUAL_ENV="$AUTOQUANT_WORKSPACE/venv/autoquant"
+
+if [ ! -x "$VIRTUAL_ENV/bin/python" ]; then
+  echo "Missing AutoQuant venv at $VIRTUAL_ENV. Run setup first." >&2
+  exit 1
+fi
+
+export PATH="$VIRTUAL_ENV/bin:$PATH"
+
+if [ -f "$AUTOQUANT_WORKSPACE/.env" ]; then
+  set -a
+  . "$AUTOQUANT_WORKSPACE/.env"
+  set +a
+fi
+
+if [ "$#" -gt 0 ]; then
+  exec "$@"
+fi
+
+exec "${SHELL:-/bin/bash}" -i
+EOF
+chmod +x "$PWD/autoquant-bash.sh"
+```
+
+Launch it with the command below on every new agent shell/session:
+
+```bash
+./autoquant-bash.sh
+```
+
+
+## Verify
+
+```bash
+./autoquant-bash.sh which autoquant
+./autoquant-bash.sh python -V
+./autoquant-bash.sh autoquant health
+```
+
+Healthy output should confirm:
+
+- `status`
+- `env_vars_ok`
+- `env_file`
+- `env_file_exists`
+- `python`
+- `backend`
+
+If health fails, stop and surface the exact environment, authentication, or backend issue to the user.
+

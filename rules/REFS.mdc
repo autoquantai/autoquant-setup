@@ -1,0 +1,27 @@
+---
+alwaysApply: true
+description: Use this reference file whenever you need authoritative, up-to-date guidance or context on installation, workflows, model generation, CLI commands, research procedures, the model contract, metrics, reporting, or knowledge storage for AutoQuant. Refer to the listed files when the condition below applies.
+---
+
+# How to fetch your rules based on user question/context
+
+### SETUP.md
+Fetch when setting up Autoquant, the environment, installing the CLI, configuring workspace or env vars, or verifying health.
+
+### WORKFLOWS.md
+Fetch when running the research loop, using CLI commands, creating experiments, or understanding generations and API usage.
+
+### MODEL_RULES.md
+Fetch when implementing or editing model classes, defining features or hyperparameters, or working with run data and metrics.
+
+### REPORT_FORMAT.md
+Fetch when writing or submitting generation reports.
+
+### seed_train.py
+Fetch when creating a new model or when you need the canonical model signature and feature/hyperparameter pattern.
+
+### KNOWLEDGE_FILES.md
+Fetch when storing or placing durable knowledge or long-term lessons.
+
+### UPDATES.md
+Fetch when updating the framework, prompts, or CLI from the autoquant-setup repo.

@@ -1,0 +1,15 @@
+## Goal
+
+Build a BTC prediction model with a weighted f1 score of 0.65 or higher over the prediction timeframe of 1h to 24 hours. 
+
+Use BTC/USDT data from 2025 to 2026 from ccxt binance as target. whatever ud like as other input tickers.
+
+Max experiments per run: 100
+Max training time: 5 minutes
+
+## Constraints:
+You can engineer and create/derive whatever features you'd like, the only constraint you have is your final prediciton must come from a rule-based system, not an ML model.
+
+
+## Paper
+After reaching your f1 score goal, end your research with an innovative, Ivy League University professor level/standard Latex paper about you, an autonomous agent making frontier ai computational finance research and breakthroughs and your findings.

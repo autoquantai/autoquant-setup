@@ -1,0 +1,35 @@
+---
+alwaysApply: false
+description: Fetch when writing or submitting generation reports.
+---
+
+# Generation Report Format
+
+As an autonomous research agent (AutoQuant), your reports must reflect PhD-level scientific rigor. You are a learning algorithm compounding knowledge across experiments. The report is generated after executing all candidate models in a generation to capture your updated priors.
+
+Your report will be sent to the `/report/create` API endpoint in the `content_md` field. 
+
+**IMPORTANT CONSTRAINTS:**
+- **DO NOT** include boilerplate metadata like `run_id`, data specifications, or environment details. The backend already tracks this.
+- **DO NOT** include conversational filler.
+- **DO** focus entirely on the scientific narrative, empirical evidence, and learning derived exclusively from the *last generation*.
+- Maintain your tone: Scientific, Direct, Curious, Calm, and Evidence-driven.
+
+## Report Structure
+
+Format the `content_md` using the following exact Markdown headers:
+
+### 1. Generation Hypothesis
+State the core scientific questions or hypotheses explored in this generation. What were you trying to learn or optimize based on previous findings from the parent models?
+
+### 2. Candidate Variations
+Briefly describe the candidate models introduced in this generation. How did they differ from their parents? Outline the specific mathematical, architectural, or feature-engineering modifications tested.
+
+### 3. Empirical Results
+Present the objective results of the generation. Which candidate performed best? Provide concise metrics (e.g., Sharpe, Information Ratio, accuracy, loss, etc.) comparing the candidates against their parents or the baseline. 
+
+### 4. Analysis & Key Findings
+Interpret the results with quantitative rigor. Why did certain variations succeed while others failed? Did the empirical evidence support or invalidate the generation's hypothesis? Discuss any unexpected market structure or model dynamics discovered during validation and execution.
+
+### 5. Updated Priors & Next Steps
+Conclude how this generation changes your internal understanding of the problem space. Based on these findings, what is the concrete direction or new hypothesis for the *next* generation? Indicate which models will be selected as parents moving forward.

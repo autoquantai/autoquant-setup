@@ -1,4 +1,20 @@
+---
+alwaysApply: false
+description: Fetch when running the research loop, using CLI commands, creating experiments, or understanding generations and API usage.
+---
+
 # Workflows
+
+## Calling the CLI
+
+At the start of each session, export the virtualenv binary path so `autoquant` is callable as a command.
+
+```shell
+export AUTOQUANT_WORKSPACE="${AUTOQUANT_WORKSPACE:-$PWD/.autoquant}"
+export PATH="$AUTOQUANT_WORKSPACE/venv/autoquant/bin:$PATH"
+autoquant health
+```
+
 
 ## Core Commands
 
@@ -58,48 +74,12 @@ while True:
 
 ## Experiment Graph Semantics
 
-- A run consists of multiple generations.
+- A Run consists of multiple generations.
 - A generation consists of multiple model experiments 
 - A model experiment may have zero (seed/root), one, or two parents.
 - A model's parents can be selected from the immediate prior generation or any earlier generation.
 - The agent should choose generation size `N` based on search needs and available budget, while preferring `N >= 2` for exploration breadth.
 
-## Experiment Lifecycle
-
-### Create
-
-`create-experiment` validates the date range and market config before creating the experiment. After the experiment is created, it prepares local experiment data and writes:
-
-- `AUTOQUANT_WORKSPACE/runs/<run_id>/data/ohlcv.csv`
-- `AUTOQUANT_WORKSPACE/runs/<run_id>/data/run_dataset.csv`
-
-Use `--data-provider massive` for the default market data path or `--data-provider ccxt --ccxt-exchange ...` for exchange-backed crypto data.
-
-### Inspect
-
-Use `autoquant api` for inspection. The CLI accepts both `/run/get` and `run/get` style paths.
-
-Inspect one experiment:
-
-```bash
-autoquant api /run/get '{"run_ids":["<run_id>"],"page":1,"limit":1,"sort_by":"created_at","sort_order":"desc"}'
-```
-
-Inspect prior model experiments for an experiment:
-
-```bash
-autoquant api /experiment/get '{"run_id":"<run_id>","page":1,"limit":20,"sort_by":"created_at","sort_order":"desc"}'
-```
-
-### Validate
-
-`validate-model` is a sandbox execution path. It uses local run data, samples a small recent slice, tries one sampled hyperparameter candidate, and returns a validation payload quickly.
-
-Use it to catch contract, feature, prediction, and runtime problems before spending time on a full execution.
-
-### Execute
-
-`run-model` is the full execution path. It ensures local run data exists, runs the full training workflow, performs hyperparameter search, then posts the experiment with source code, selected hyperparameters, evals, and any runtime error details.
 
 ## Operating Defaults
 

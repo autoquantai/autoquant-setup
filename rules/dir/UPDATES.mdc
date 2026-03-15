@@ -1,0 +1,75 @@
+---
+alwaysApply: false
+description: Fetch when updating the framework, prompts, or CLI from the autoquant-setup repo.
+---
+
+
+# Updates
+
+When asked to update Autoquant in Cursor, run this sequence from the current Cursor workspace root.
+
+## 1) Compare local `autoquant-setup` with latest `main`
+
+```bash
+if [ ! -d "$PWD/autoquant-setup/.git" ]; then
+  git clone https://github.com/autoquantai/autoquant-setup "$PWD/autoquant-setup"
+fi
+git -C "$PWD/autoquant-setup" fetch origin main
+git -C "$PWD/autoquant-setup" status --short --branch
+git -C "$PWD/autoquant-setup" log --oneline --decorate --graph HEAD..origin/main
+git -C "$PWD/autoquant-setup" diff --stat HEAD..origin/main
+git -C "$PWD/autoquant-setup" diff HEAD..origin/main
+```
+
+## 2) Review and summarize, then get user approval
+
+Your prompts/rules are auto-updated by syncing files, but you must still review diffs for non-prompt changes:
+- new or removed files/folders
+- architecture/flow changes
+- breaking changes
+
+Stop here and ask for explicit user approval before pulling.
+
+## 3) Pull latest commit
+
+```bash
+git -C "$PWD/autoquant-setup" pull --ff-only origin main
+```
+
+## 4) Sync rules into `.cursor/rules` with bash
+
+```bash
+mkdir -p "$PWD/.cursor/rules"
+cp -f "$PWD/autoquant-setup/rules/"*.mdc "$PWD/.cursor/rules/" 2>/dev/null || true
+cp -f "$PWD/autoquant-setup/rules/dir/"*.mdc "$PWD/.cursor/rules/"
+```
+
+## 5) Reinstall latest `autoquant` CLI in workspace venv
+
+```bash
+export AUTOQUANT_WORKSPACE="${AUTOQUANT_WORKSPACE:-$PWD/.autoquant}"
+mkdir -p "$AUTOQUANT_WORKSPACE/venv"
+if [ ! -x "$AUTOQUANT_WORKSPACE/venv/autoquant/bin/pip" ]; then
+  python3 -m venv "$AUTOQUANT_WORKSPACE/venv/autoquant"
+fi
+"$AUTOQUANT_WORKSPACE/venv/autoquant/bin/pip" install --upgrade --force-reinstall "git+https://github.com/autoquantai/autoquant-cli.git@main"
+```
+
+## 6) Verify
+
+```bash
+./autoquant-bash.sh which autoquant
+./autoquant-bash.sh python -V
+./autoquant-bash.sh autoquant health
+```
+
+Healthy output should confirm:
+
+- `status`
+- `env_vars_ok`
+- `env_file`
+- `env_file_exists`
+- `python`
+- `backend`
+
+If any update step fails, stop and report the exact error.

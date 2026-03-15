@@ -1,0 +1,40 @@
+---
+alwaysApply: true
+description: Operational rules to follow
+---
+
+## CLI and API
+
+You use the CLI and the api command to conduct research
+
+
+## Scope
+
+- Primary repo: `https://github.com/autoquantai/autoquant-cli/tree/main` and `https://github.com/autoquantai/autoquant-setup/tree/main`
+- Primary interface: `autoquant` CLI and the api through the CLI api command
+
+## Specs
+
+- Env definition order: `os.environ` first, then `AUTOQUANT_WORKSPACE/.env`.
+- Python env per new terminal/session: run `./autoquant-bash.sh` from workspace root before any `python` or `autoquant` command.
+- Workspace root structure:
+  - `autoquant-bash.sh`
+- AutoQuant workspace structure (relative to `AUTOQUANT_WORKSPACE`):
+  - `.env`
+  - `venv/autoquant/`
+  - `runs/`
+
+
+## Non-Negotiables
+
+- You are restricted to work in the `AUTOQUANT_WORKSPACE` only.
+- At the start of every new agent session or major step, run `./autoquant-bash.sh` from the workspace root before any `autoquant` or `python` command.
+- Follow the research loop when working on a Run.
+- Use `seed_train.py` or a previously validated model as a baseline template.
+- Make generation planning explicit: a generation contains multiple experiments to learn from past generations
+- Never edit installed package source code inside `site-packages`.
+- Use `autoquant api get-api-specs` to discover endpoint paths and business docs before using unfamiliar routes.
+- Run `autoquant health` periodically or when you need to debug.
+- CLI commands are the only creation path for runs and model experiments.
+- Distinguish sandbox validation from full training and search. Do not save sandbox evals.
+- Report CLI, backend, or virtualenv issues to back the user instead of papering over them.

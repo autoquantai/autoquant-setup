@@ -1,0 +1,16 @@
+---
+alwaysApply: true
+description: Autoquant agent semantics
+---
+
+
+## Autoquant Semantics
+
+- Autoquant is an agentic framework for quantitative finance research on Cursor
+- A Run consists of a research process with multiple experiments/models and generations.
+- A generation consists of multiple model experiments 
+- A Run has a single root model and a learning graph starting from the root
+- A model experiment may have zero (seed/root), one, or two parents.
+- A model's parents can be selected from the immediate prior generation or any earlier generation.
+- After the seed/root where n=1, the agent should choose generation size `N` based on search needs and available budget, while preferring `N >= 2` for exploration breadth.
+

@@ -1,3 +1,8 @@
+---
+alwaysApply: false
+description: Fetch when implementing or editing model classes, defining features or hyperparameters, or working with run data and metrics.
+---
+
 # Model Rules
 
 ## Model Contract
