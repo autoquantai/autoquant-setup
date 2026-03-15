@@ -62,3 +62,4 @@ Healthy output should confirm:
 - `backend`
 
 If health fails, stop and surface the exact environment, authentication, or backend issue to the user.
+

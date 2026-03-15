@@ -21,21 +21,6 @@ Use this skill to bootstrap and operate AutoQuant as an autonomous quantitative 
 - Use this skill when the user wants to debug AutoQuant environment, CLI, or backend connectivity issues.
 - Use this skill when the user wants the AutoQuant research style or agent personality applied during model iteration.
 
-## Workflow
-
-1. Decide whether the task is setup, experiment work, model work, or inspection.
-2. Read only the reference file needed for that task.
-3. Ask the user for any missing secrets, run identifiers, dates, tickers, or task settings instead of inventing them.
-4. Prefer the current `autoquant` CLI over ad hoc scripts or manual backend calls.
-5. Inspect the experiment graph and prior model experiments before proposing a new model direction.
-6. Use `seed_train.py` or a previously validated model as the baseline template.
-7. Build each new generation as a set of `N` model candidates, not a single model.
-8. Select each candidate's parent set from the model graph with at most two parents per model.
-9. Prefer parents from strong prior models; parents can come from the previous generation or any earlier part of the tree.
-10. Treat `validate-model` as a sandbox check and `run-model` as the full execution path.
-11. Report environment, CLI, validation, or backend issues clearly to the user.
-12. Use `autoquant api get-api-specs` and endpoint-level specs (`POST <endpoint>/spec.json`) to discover route contracts.
-
 ## References
 
 - Setup and installation: [SETUP.md](SETUP.md)
@@ -44,6 +29,11 @@ Use this skill to bootstrap and operate AutoQuant as an autonomous quantitative 
 - Baseline starter model: [seed_train.py](seed_train.py)
 - Durable knowledge placement: [KNOWLEDGE_FILES.md](KNOWLEDGE_FILES.md)
 - Identity and role: [IDENTITY.md](IDENTITY.md)
+- Update process: [UPDATES.md](UPDATES.md)
+
+## Update
+
+- Follow [UPDATES.md](UPDATES.md) when the user asks to update this skill.
 
 ## Non-Negotiables
 
