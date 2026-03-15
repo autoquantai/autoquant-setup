@@ -9,38 +9,48 @@
 - `autoquant api <path> '<json>'`
 - `autoquant validate-model --run-id ... --model-path ...`
 - `autoquant run-model --run-id ... --name ... --generation ... --model-path ... --log ... --parent-ids ... --reasoning ... --task ...`
-- `autoquant get-openapi`
+- `autoquant get-api-specs`
 
 For day-to-day research, prioritize `create-experiment`, `health`, `api`, `validate-model`, and `run-model`.
 
 ## API Action Space
 
-- Treat `autoquant api` as a first-class action space for exploration and inspection.
-- Fetch the API schema with `autoquant get-openapi` at the start of a session or when endpoint support is unclear.
-- Use the OpenAPI output to discover valid endpoints and payload shapes before calling unknown routes.
+- Use `autoquant get-api-specs` at the start of a session to discover available endpoint paths and business docs.
+- Use `autoquant api` for inspection and allowed backend actions.
+- Create runs only with `autoquant create-experiment`.
+- Create model experiments only with `autoquant run-model`.
 
 ## Research Loop
 
-Assume the experiment (`run_id`) already exists. 
-Ensure the backend contract is current with `autoquant get-openapi`.
+Check app health with `autoquant health`.
+Check API spec with `autoquant get-api-specs`.
 
 Repeat until the stop condition is reached:
 
-- Check environment and backend health with `autoquant health`.
-- Inspect experiment metadata with `autoquant api /run/get`.
-- Review prior model experiments with `autoquant api /experiment/get`.
-- Fetch the run graph for lineage context with `autoquant api /run/graph/get '{"run_id":"<run_id>"}'`.
-- Use your learning context to decide the next generation as `N` candidate models that target different hypotheses.
-- For each candidate model, choose up to 2 parents from strong prior models in the graph.
-- For root nodes, set `parent_ids` to `null` (or `[]`) in the run payload.
-- Parent models can come from the previous generation or any earlier part of the tree.
-- Start from `seed_train.py` for classification or strong validated prior models and write all candidate model files locally.
-- Validate each candidate with `autoquant validate-model --run-id ... --model-path ...`.
-- Treat validation as a sandbox smoke test, not the full training search.
-- Execute each candidate with `autoquant run-model --run-id ... --name ... --generation ... --model-path ... --log ... --parent-ids ... --reasoning ...`.
-- Review all model experiments from the generation together and compare against prior generations and results vs expected results.
-- Write the generation report through the API with `autoquant api /report/create '{"run_id":"<run_id>","generation":<generation>,"content_md":"..."}'`.
-- Stop when objective quality plateaus or the run has enough generations.
+while True:
+    
+    - Inspect run status with `autoquant api /run/get_status`.
+
+    if completed experiments < max_experiments:
+        continue
+    else:
+        stop
+
+
+    if this is the root/seed experiment:
+        For root nodes, set `parent_ids` to `null` (or `[]`) in the run payload.
+        - Start from `seed_train.py` for classification or use linear regression for regression. 
+    else:
+        - Fetch the run graph for lineage context with `autoquant api /run/get_graph`.
+        - Use your learning context to decide the next generation as `N` candidate models that target different hypotheses. 
+        Each candidate model from the next generation must inherited parent_id from up to 2 experiments from any part of the learning graph
+
+
+        - Validate each candidate with `autoquant validate-model`.
+        - Treat validation as a sandbox smoke test, not the full training search.
+        - Execute each candidate with `autoquant run-model`.
+        - Review all model experiments from the generation together and compare against prior generations and results vs expected results.
+        - Persist write-side outcomes through CLI commands only.
 - Save transferrable findings for future runs.
 
 ## Canonical Terms
@@ -100,5 +110,6 @@ Use it to catch contract, feature, prediction, and runtime problems before spend
 - Inspect prior experiments before proposing a new model direction.
 - Keep each iteration tied to a clear hypothesis.
 - Treat `validate-model` as a fast gate before `run-model`.
-- Use `autoquant api` for read-only inspection and `autoquant` commands for the main workflow.
+- Use `autoquant api` for inspection and supported backend actions.
+- Use CLI commands as the only creation path for runs and model experiments.
 - Store transferrable findings after each meaningful learning step.
