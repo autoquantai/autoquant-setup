@@ -33,19 +33,7 @@ Use the installed CLI as the primary interface. Do not edit package source insid
 
 ## Launcher
 
-Create a stable launcher so `autoquant` works in fresh bash sessions.
-
-```bash
-mkdir -p "$HOME/.local/bin"
-cat > "$HOME/.local/bin/autoquant" <<'EOF'
-#!/usr/bin/env bash
-export AUTOQUANT_WORKSPACE="${AUTOQUANT_WORKSPACE:-$HOME/.nanobot/workspace/autoquant}"
-exec "$AUTOQUANT_WORKSPACE/venv/autoquant/bin/autoquant" "$@"
-EOF
-chmod +x "$HOME/.local/bin/autoquant"
-grep -q 'export PATH="$HOME/.local/bin:$PATH"' "$HOME/.bashrc" || echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.bashrc"
-source "$HOME/.bashrc"
-```
+Use the binary in your virtual environment as the cli
 
 ## Verify
 

@@ -4,6 +4,11 @@
 
  `autoquant --help` to get the list of commands and `autoquant <command> --help` to get the command contract/signature
 
+## Folder structure
+
+Each run has its own folder under "$AUTOQUANT_WORKSPACE/runs/<run-id>". It contains:
+- data: the raw and dataset we're working with
+- models: all your candidate models.
 
 ## API endpoints
 
@@ -36,6 +41,7 @@ while True:
         - Fetch the run graph for lineage context with `autoquant api /run/get_graph`.
         - Use your learning context to decide the next generation as `N` candidate models that target different hypotheses. 
         Each candidate model from the next generation must inherited parent_id from up to 2 experiments from any part of the learning graph
+        Candidate models must be saved under models/ in your run folder
 
         - Validate each candidate with `autoquant validate-model`.
         - Treat validation as a sandbox smoke test, not the full training search.
@@ -53,8 +59,8 @@ while True:
 ## Experiment Graph Semantics
 
 - A run consists of multiple generations.
-- A generation consists of multiple model experiments evaluated together.
-- A model experiment may have zero, one, or two parents.
+- A generation consists of multiple model experiments 
+- A model experiment may have zero (seed/root), one, or two parents.
 - A model's parents can be selected from the immediate prior generation or any earlier generation.
 - The agent should choose generation size `N` based on search needs and available budget, while preferring `N >= 2` for exploration breadth.
 
