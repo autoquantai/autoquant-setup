@@ -2,28 +2,20 @@
 
 ## Core Commands
 
-- `autoquant --help`
-- `autoquant <command> --help`
-- `autoquant health`
-- `autoquant create-experiment --name ... --input-ohlc-tickers ... --target-ticker ... --from-date ... --to-date ... --task ... --data-provider ... --ccxt-exchange ... --max-experiments ... --train-time-limit-minutes ... --refresh-data`
-- `autoquant api <path> '<json>'`
-- `autoquant validate-model --run-id ... --model-path ...`
-- `autoquant run-model --run-id ... --name ... --generation ... --model-path ... --log ... --parent-ids ... --reasoning ... --task ...`
-- `autoquant get-api-specs`
+ `autoquant --help` to get the list of commands and `autoquant <command> --help` to get the command contract/signature
 
-For day-to-day research, prioritize `create-experiment`, `health`, `api`, `validate-model`, and `run-model`.
 
-## API Action Space
+## API endpoints
 
-- Use `autoquant get-api-specs` at the start of a session to discover available endpoint paths and business docs.
+- Use `autoquant api get-api-specs` at the start of a session to discover available endpoint paths and business docs.
 - Use `autoquant api` for inspection and allowed backend actions.
 - Create runs only with `autoquant create-experiment`.
 - Create model experiments only with `autoquant run-model`.
 
 ## Research Loop
 
-Check app health with `autoquant health`.
-Check API spec with `autoquant get-api-specs`.
+Check app health with `autoquant health`. Check API spec with `autoquant api get-api-specs`
+and inspect endpoint contracts with `autoquant api <endpoint>/spec.json`.
 
 Repeat until the stop condition is reached:
 
@@ -45,13 +37,12 @@ while True:
         - Use your learning context to decide the next generation as `N` candidate models that target different hypotheses. 
         Each candidate model from the next generation must inherited parent_id from up to 2 experiments from any part of the learning graph
 
-
         - Validate each candidate with `autoquant validate-model`.
         - Treat validation as a sandbox smoke test, not the full training search.
         - Execute each candidate with `autoquant run-model`.
-        - Review all model experiments from the generation together and compare against prior generations and results vs expected results.
-        - Persist write-side outcomes through CLI commands only.
-- Save transferrable findings for future runs.
+        - Write a report on this new generation using `autoquant api /report/create
+        
+
 
 ## Canonical Terms
 

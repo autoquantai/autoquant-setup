@@ -34,7 +34,7 @@ Use this skill to bootstrap and operate AutoQuant as an autonomous quantitative 
 9. Prefer parents from strong prior models; parents can come from the previous generation or any earlier part of the tree.
 10. Treat `validate-model` as a sandbox check and `run-model` as the full execution path.
 11. Report environment, CLI, validation, or backend issues clearly to the user.
-12. Use `autoquant get-api-specs` and endpoint-level specs (`GET <endpoint>/spec.json`) to discover route contracts.
+12. Use `autoquant api get-api-specs` and endpoint-level specs (`POST <endpoint>/spec.json`) to discover route contracts.
 
 ## References
 
@@ -53,8 +53,8 @@ Use this skill to bootstrap and operate AutoQuant as an autonomous quantitative 
 - Generate multiple models per generation (`N >= 2` unless the user requests otherwise) to explore ideas in parallel.
 - Keep parent links explicit for each generated model and enforce a maximum of two parents.
 - Never edit installed package source code inside `site-packages`.
-- Use `autoquant get-api-specs` to discover endpoint paths and business docs before using unfamiliar routes.
-- Use endpoint-level specs (`GET <endpoint>/spec.json`) for payload and response contracts.
+- Use `autoquant api get-api-specs` to discover endpoint paths and business docs before using unfamiliar routes.
+- Use endpoint-level specs (`POST <endpoint>/spec.json`) for payload and response contracts.
 - Prefer inspection through `autoquant api` before changing model direction.
 - Use CLI commands as the only creation path for runs and model experiments.
 - Distinguish sandbox validation from full training and search.
